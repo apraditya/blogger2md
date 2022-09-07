@@ -1,0 +1,26 @@
+{
+  "name": "blogger2md",
+  "version": "1.0.0",
+  "description": "Convert Blogger backup blog posts to Hugo compatible markdown files",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apraditya/blogger2md.git"
+  },
+  "author": "Adinda Praditya <apraditya@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "bugs": {
+    "url": "https://github.com/apraditya/blogger2md/issues"
+  },
+  "homepage": "https://github.com/apraditya/blogger2md#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "blogger",
+    "hugo",
+    "converter",
+    "markdown"
+  ]
+}
