@@ -15,12 +15,15 @@
   },
   "homepage": "https://github.com/apraditya/blogger2md#readme",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest --run --reporter verbose"
   },
   "keywords": [
     "blogger",
     "hugo",
     "converter",
     "markdown"
-  ]
+  ],
+  "devDependencies": {
+    "vitest": "^0.23.1"
+  }
 }
