@@ -12,4 +12,9 @@ describe("parseXml", () => {
     expect(result).toHaveProperty("entry");
     expect(result).toHaveProperty("updated");
   });
+
+  it("throws an error when the xml file isn't valid", () => {
+    const xmlFile = `${FIXTURE_DIR}/complete-entry.xml`;
+    expect(() => await parseXml(xmlFile)).toThrowError('invalid')
+  });
 });
