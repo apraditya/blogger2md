@@ -1,7 +1,7 @@
 import { it, expect, describe } from "vitest";
+import { FIXTURE_DIR, xmlFixture } from "./testHelpers";
 
-import { parseXml } from "../src/blogger";
-import { FIXTURE_DIR } from "./testHelpers";
+import { parseXml, postToMd } from "../src/blogger";
 
 describe("parseXml", () => {
   it("parses the xml", async () => {
@@ -16,5 +16,23 @@ describe("parseXml", () => {
   it("throws an error when the xml file isn't valid", async () => {
     const xmlFile = `${FIXTURE_DIR}/complete-entry.xml`;
     await expect(parseXml(xmlFile)).rejects.toThrowError("invalid");
+  });
+});
+
+describe("postToMd", () => {
+  let xmlFile = "post-normal.xml";
+
+  const subject = async () => {
+    const entry = await xmlFixture(xmlFile);
+    return postToMd(entry);
+  };
+
+  it("returns post object", async () => {
+    const result = await subject();
+    expect(result).toHaveProperty("title");
+    expect(result.title).toContain("git-flow Auto Komplit");
+    expect(result).toHaveProperty("draft", "false");
+    expect(result).toHaveProperty("published");
+    expect(result.published).toContain("2015-12-");
   });
 });

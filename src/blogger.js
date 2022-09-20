@@ -17,4 +17,16 @@ async function parseXml(xmlFile) {
   });
 }
 
+const postToMd = (postEntry) => {
+  let { title, published } = postEntry;
+  let draft = "false";
+
+  return {
+    title,
+    draft,
+    published,
+  };
+};
+
+module.exports.postToMd = postToMd;
 module.exports.parseXml = parseXml;
