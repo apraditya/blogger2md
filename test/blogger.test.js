@@ -35,4 +35,12 @@ describe("postToMd", () => {
     expect(result).toHaveProperty("published");
     expect(result.published).toContain("2015-12-");
   });
+
+  it("identifies if the post is on draft", async () => {
+    xmlFile = "post-draft.xml";
+    const result = await subject();
+    expect(result).toHaveProperty("title");
+    expect(result).toHaveProperty("draft", "true");
+    expect(result).toHaveProperty("published");
+  });
 });

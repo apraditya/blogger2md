@@ -20,6 +20,12 @@ async function parseXml(xmlFile) {
 const postToMd = (postEntry) => {
   let { title, published } = postEntry;
   let draft = "false";
+  if (
+    postEntry["app:control"] &&
+    postEntry["app:control"]["app:draft"] == "yes"
+  ) {
+    draft = "true";
+  }
 
   return {
     title,
