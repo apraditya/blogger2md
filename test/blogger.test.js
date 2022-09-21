@@ -23,8 +23,8 @@ describe("postToMd", () => {
   let xmlFile = "post-normal.xml";
 
   const subject = async () => {
-    const entry = await xmlFixture(xmlFile);
-    return postToMd(entry);
+    const content = await xmlFixture(xmlFile);
+    return postToMd(content.entry);
   };
 
   it("returns post object", async () => {
