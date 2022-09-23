@@ -5,7 +5,9 @@ const { XMLParser } = require("fast-xml-parser");
 
 async function parseXml(xmlFile) {
   return readFile(xmlFile).then((fileBuffer) => {
-    const parser = new XMLParser();
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+    });
     const parsedXml = parser.parse(fileBuffer.toString());
     const { title, author, entry, updated } = parsedXml.feed || {};
 
@@ -18,7 +20,8 @@ async function parseXml(xmlFile) {
 }
 
 const postToMd = (postEntry) => {
-  let { title, published } = postEntry;
+  let { published } = postEntry;
+  let title = postEntry.title["#text"];
   let draft = "false";
   if (
     postEntry["app:control"] &&

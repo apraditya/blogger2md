@@ -12,7 +12,9 @@ const readFixture = (relPath) => {
 };
 
 const xmlFixture = async (relPath) => {
-  const parser = new XMLParser();
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+  });
   const content = await readFixture(relPath);
 
   return parser.parse(content);
