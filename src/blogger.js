@@ -31,6 +31,20 @@ const getUrl = (entryLink) => {
   return "";
 };
 
+const getTags = (entryCategory) => {
+  if (!entryCategory.filter) {
+    if (entryCategory["@_term"]?.indexOf("schemas.google") == -1) {
+      return entryCategory["@_term"];
+    } else {
+      return [];
+    }
+  }
+
+  return entryCategory
+    .filter((category) => category["@_term"]?.indexOf("schemas.google") == -1)
+    .map((category) => category["@_term"]);
+};
+
 const postToMd = (postEntry) => {
   let { published } = postEntry;
   let title = postEntry.title["#text"];
@@ -47,6 +61,7 @@ const postToMd = (postEntry) => {
     draft,
     published,
     url: getUrl(postEntry.link),
+    tags: getTags(postEntry.category),
   };
 };
 
