@@ -34,6 +34,8 @@ describe("postToMd", () => {
     expect(result).toHaveProperty("draft", "false");
     expect(result).toHaveProperty("published");
     expect(result.published).toContain("2015-12-");
+    expect(result).toHaveProperty("url");
+    expect(result.url).toContain("plugin-git-flow-auto-komplit");
   });
 
   it("identifies if the post is on draft", async () => {
@@ -42,5 +44,6 @@ describe("postToMd", () => {
     expect(result).toHaveProperty("title");
     expect(result).toHaveProperty("draft", "true");
     expect(result).toHaveProperty("published");
+    expect(result).toHaveProperty("url");
   });
 });

@@ -19,6 +19,18 @@ async function parseXml(xmlFile) {
   });
 }
 
+const getUrl = (entryLink) => {
+  const altLink = entryLink.find(
+    (link) => link["@_rel"] === "alternate" && link["@_type"] === "text/html"
+  );
+
+  if (altLink?.["@_href"]) {
+    return altLink?.["@_href"];
+  }
+
+  return "";
+};
+
 const postToMd = (postEntry) => {
   let { published } = postEntry;
   let title = postEntry.title["#text"];
@@ -34,6 +46,7 @@ const postToMd = (postEntry) => {
     title,
     draft,
     published,
+    url: getUrl(postEntry.link),
   };
 };
 
