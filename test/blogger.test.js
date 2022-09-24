@@ -1,7 +1,7 @@
 import { it, expect, describe } from "vitest";
 import { FIXTURE_DIR, xmlFixture } from "./testHelpers";
 
-import { parseXml, postToMd } from "../src/blogger";
+import { parseXml, entryToPost, postToMd } from "../src/blogger";
 
 describe("parseXml", () => {
   it("parses the xml", async () => {
@@ -19,12 +19,12 @@ describe("parseXml", () => {
   });
 });
 
-describe("postToMd", () => {
+describe("entryToPost", () => {
   let xmlFile = "post-normal.xml";
 
   const subject = async () => {
     const content = await xmlFixture(xmlFile);
-    return postToMd(content.entry);
+    return entryToPost(content.entry);
   };
 
   it("returns post object", async () => {
@@ -38,6 +38,7 @@ describe("postToMd", () => {
     expect(result.url).toContain("plugin-git-flow-auto-komplit");
     expect(result).toHaveProperty("tags");
     expect(result.tags).toContain("Tools", "Mac", "Git");
+    expect(result).toHaveProperty("content");
   });
 
   it("identifies if the post is on draft", async () => {
@@ -48,5 +49,59 @@ describe("postToMd", () => {
     expect(result).toHaveProperty("published");
     expect(result).toHaveProperty("url");
     expect(result).toHaveProperty("tags", []);
+    expect(result).toHaveProperty("content");
+  });
+});
+
+describe("postToMd", () => {
+  let xmlFile = "post-normal.xml";
+
+  const subject = async () => {
+    const xmlContent = await xmlFixture(xmlFile);
+    const post = entryToPost(xmlContent.entry);
+    return postToMd(post);
+  };
+
+  const getFrontMatter = (mdStr) => {
+    const fmLines = [];
+    const mdLines = mdStr.split("\n");
+    let index = 1;
+    let currentLine = mdLines[index];
+    while (currentLine !== "---") {
+      fmLines.push(currentLine);
+      index += 1;
+      currentLine = mdLines[index];
+    }
+
+    return fmLines;
+  };
+
+  it("contains markdown front matter", async () => {
+    const result = await subject();
+    const fmLines = getFrontMatter(result);
+    expect(fmLines[0]).toContain("title");
+    expect(fmLines[0]).toContain("git-flow");
+    expect(fmLines[1]).toContain("date");
+    expect(fmLines[1]).toContain("2015-12");
+    expect(fmLines[2]).toContain("draft");
+    expect(fmLines[2]).toContain("false");
+    expect(fmLines[3]).toContain("url");
+    expect(fmLines[3]).toContain("git-flow-auto-komplit");
+    expect(fmLines[4]).toContain("tags");
+  });
+
+  it("contains draft markdown front matter", async () => {
+    xmlFile = "post-draft.xml";
+    const result = await subject();
+    const fmLines = getFrontMatter(result);
+    expect(fmLines[0]).toContain("title");
+    expect(fmLines[0]).toContain("undefined");
+    expect(fmLines[1]).toContain("date");
+    expect(fmLines[1]).toContain("2015-11");
+    expect(fmLines[2]).toContain("draft");
+    expect(fmLines[2]).toContain("true");
+    expect(fmLines[3]).toContain("url");
+    expect(fmLines[3]).toContain("");
+    expect(fmLines[4]).toContain("tags");
   });
 });

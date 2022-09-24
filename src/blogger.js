@@ -2,6 +2,7 @@ const {
   promises: { readFile },
 } = require("fs");
 const { XMLParser } = require("fast-xml-parser");
+const TurndownService = require("turndown");
 
 async function parseXml(xmlFile) {
   return readFile(xmlFile).then((fileBuffer) => {
@@ -45,7 +46,7 @@ const getTags = (entryCategory) => {
     .map((category) => category["@_term"]);
 };
 
-const postToMd = (postEntry) => {
+const entryToPost = (postEntry) => {
   let { published } = postEntry;
   let title = postEntry.title["#text"];
   let draft = "false";
@@ -62,8 +63,33 @@ const postToMd = (postEntry) => {
     published,
     url: getUrl(postEntry.link),
     tags: getTags(postEntry.category),
+    content: postEntry.content["#text"],
   };
 };
 
-module.exports.postToMd = postToMd;
+const postToMd = (post) => {
+  const { url, tags } = post;
+
+  let alias = url.replace(/^.*\/\/[^\/]+/, "");
+
+  let tagStr = "";
+  if (tags.length) {
+    tagStr = tags.map((a) => "- " + a).join("\n");
+  }
+
+  const fileHeader = `---\ntitle: '${post.title}'\ndate: ${post.published}\ndraft: ${post.draft}\nurl: ${alias}\ntags: \n${tagStr}\n---\n`;
+
+  const tds = new TurndownService({ codeBlockStyle: "fenced" });
+  tds.addRule("preblock", {
+    filter: ["pre"],
+    replacement: (content) => "```\n" + content + "\n```",
+  });
+
+  const markdown = tds.turndown(post?.content || "");
+
+  return `${fileHeader}\n${markdown}`;
+};
+
+module.exports.entryToPost = entryToPost;
 module.exports.parseXml = parseXml;
+module.exports.postToMd = postToMd;
