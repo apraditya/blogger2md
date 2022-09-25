@@ -1,7 +1,12 @@
 import { it, expect, describe } from "vitest";
 import { FIXTURE_DIR, xmlFixture } from "./testHelpers";
 
-import { parseXml, entryToPost, postToMd } from "../src/blogger";
+import {
+  entryToPost,
+  filenameFromTitle,
+  parseXml,
+  postToMd,
+} from "../src/blogger";
 
 describe("parseXml", () => {
   it("parses the xml", async () => {
@@ -103,5 +108,17 @@ describe("postToMd", () => {
     expect(fmLines[3]).toContain("url");
     expect(fmLines[3]).toContain("");
     expect(fmLines[4]).toContain("tags");
+  });
+});
+
+describe("filenameFromTitle", () => {
+  it("strips dot and single quote", () => {
+    const result = filenameFromTitle("'Magic' conversion *.html to text");
+    expect(result).toEqual("magic-conversion-html-to-text");
+  });
+
+  it("strips non number and alphabet character", () => {
+    const result = filenameFromTitle("Reduce File Size by 30% (aproximately)");
+    expect(result).toEqual("reduce-file-size-by-30-aproximately");
   });
 });

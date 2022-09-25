@@ -3,6 +3,7 @@ const {
 } = require("fs");
 const { XMLParser } = require("fast-xml-parser");
 const TurndownService = require("turndown");
+const sanitize = require("sanitize-filename");
 
 async function parseXml(xmlFile) {
   return readFile(xmlFile).then((fileBuffer) => {
@@ -90,6 +91,15 @@ const postToMd = (post) => {
   return `${fileHeader}\n${markdown}`;
 };
 
+const filenameFromTitle = (str) =>
+  sanitize(str)
+    .replace(/[\.']/g, "") // remove dots and single quotes
+    .replace(/[^a-z0-9]/gi, "-") // replace those that aren't number nor letter with a hyphen
+    .replace(/[\-]{2,}/g, "-") // replace repeating hyphens into a single one
+    .replace(/-$/g, "") // remove trailing hyphen
+    .toLowerCase();
+
 module.exports.entryToPost = entryToPost;
+module.exports.filenameFromTitle = filenameFromTitle;
 module.exports.parseXml = parseXml;
 module.exports.postToMd = postToMd;
