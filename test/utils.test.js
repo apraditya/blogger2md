@@ -1,9 +1,17 @@
-import { it, expect, describe } from "vitest";
+import { afterEach, it, expect, describe } from "vitest";
+import { existsSync, rmdirSync } from "fs";
 
 import { validateArgs } from "../src/utils";
 
 describe("validateArgs", () => {
   let testedArgs = [];
+
+  afterEach(() => {
+    const output = "md-output";
+    if (existsSync(output)) {
+      rmdirSync(output);
+    }
+  });
 
   const subject = () => validateArgs(testedArgs);
 
@@ -21,5 +29,12 @@ describe("validateArgs", () => {
     const { backupXml, outputDir } = subject();
     expect(backupXml).toEqual("./test/fixtures/complete.xml");
     expect(outputDir).toEqual("md-output");
+  });
+
+  it("creates the output dir if not exist", () => {
+    testedArgs = ["./test/fixtures/complete.xml"];
+    expect(existsSync("md-output")).toBeFalsy();
+    const { backupXml, outputDir } = subject();
+    expect(existsSync("md-output")).toBeTruthy();
   });
 });
