@@ -2,7 +2,10 @@
   "name": "blogger2md",
   "version": "1.0.0",
   "description": "Convert Blogger backup blog posts to Hugo compatible markdown files",
-  "main": "index.js",
+  "main": "bin/index.js",
+  "bin": {
+    "blogger2md": "./bin/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/apraditya/blogger2md.git"
