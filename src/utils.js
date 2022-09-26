@@ -4,8 +4,6 @@ const {
   promises: { writeFile },
 } = require("fs");
 
-const usage = "\nUsage: blogger2md <backup-xml> <output-dir>";
-
 const validateArgs = (args) => {
   let [backupXml, outputDir = "md-output"] = args;
 

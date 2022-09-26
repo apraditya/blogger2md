@@ -10,5 +10,6 @@ try {
   importXml(backupXml, outputDir);
 } catch (error) {
   console.error(`Error: ${error}`);
+  console.log(usage);
   return 1;
 }
