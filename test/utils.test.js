@@ -1,7 +1,7 @@
 import { afterEach, it, expect, describe } from "vitest";
-import { existsSync, rmdirSync } from "fs";
+import { existsSync, rmSync, rmdirSync } from "fs";
 
-import { validateArgs } from "../src/utils";
+import { saveToFile, validateArgs } from "../src/utils";
 
 describe("validateArgs", () => {
   let testedArgs = [];
@@ -36,5 +36,28 @@ describe("validateArgs", () => {
     expect(existsSync("md-output")).toBeFalsy();
     const { backupXml, outputDir } = subject();
     expect(existsSync("md-output")).toBeTruthy();
+  });
+});
+
+describe("saveToFile", () => {
+  let filename = "./test/fixtures/save-to-file.md";
+  let content = "A content";
+
+  afterEach(() => {
+    if (existsSync(filename)) {
+      rmSync(filename);
+    }
+  });
+
+  const subject = async () => saveToFile(filename, content);
+
+  it("saves to the file", async () => {
+    const result = await subject();
+    expect(existsSync(filename)).toBeTruthy();
+  });
+
+  it("throws error when the folder doesn't exist", async () => {
+    filename = "./not/exist/folder/file.md";
+    await expect(subject()).rejects.toThrowError(/error saving/i);
   });
 });

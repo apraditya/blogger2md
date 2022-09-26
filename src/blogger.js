@@ -5,6 +5,8 @@ const { XMLParser } = require("fast-xml-parser");
 const TurndownService = require("turndown");
 const sanitize = require("sanitize-filename");
 
+const { saveToFile } = require("./utils");
+
 async function parseXml(xmlFile) {
   return readFile(xmlFile).then((fileBuffer) => {
     const parser = new XMLParser({
@@ -99,7 +101,31 @@ const filenameFromTitle = (str) =>
     .replace(/-$/g, "") // remove trailing hyphen
     .toLowerCase();
 
-module.exports.entryToPost = entryToPost;
-module.exports.filenameFromTitle = filenameFromTitle;
-module.exports.parseXml = parseXml;
-module.exports.postToMd = postToMd;
+const savePost = (post, folder = ".") => {
+  const filename = `${folder}/${filenameFromTitle(post.title)}.md`;
+  return saveToFile(filename, postToMd(post));
+};
+
+const importXml = async (backupXml, outputDir) => {
+  const parsedXml = await parseXml(backupXml);
+  Object.values(parsedXml.entry).forEach((entry) => {
+    if (entry.id.indexOf(".post-") != -1 && !entry["thr:in-reply-to"]) {
+      const post = entryToPost(entry);
+      if (!post.title) {
+        console.log(`Skipped ${entry.id} since it has no title`);
+      } else {
+        savePost(post, outputDir).catch((error) => {
+          console.error(error);
+        });
+      }
+    }
+  });
+};
+
+module.exports = {
+  entryToPost,
+  filenameFromTitle,
+  importXml,
+  parseXml,
+  postToMd,
+};

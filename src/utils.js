@@ -1,6 +1,7 @@
 const {
   existsSync,
   mkdirSync,
+  promises: { writeFile },
 } = require("fs");
 
 const usage = "\nUsage: blogger2md <backup-xml> <output-dir>";
@@ -24,6 +25,19 @@ const validateArgs = (args) => {
   };
 };
 
+const saveToFile = (filename, content) =>
+  writeFile(filename, content)
+    .then(() => {
+      console.log(`Successfully saved to ${filename}`);
+    })
+    .catch((err) => {
+      const message = `Error saving to ${filename} - ${JSON.stringify(err)}`;
+      console.log(message);
+      console.dir(err);
+      throw new Error(message);
+    });
+
 module.exports = {
+  saveToFile,
   validateArgs,
 };
