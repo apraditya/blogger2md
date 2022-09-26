@@ -101,10 +101,15 @@ const filenameFromTitle = (str) =>
     .replace(/-$/g, "") // remove trailing hyphen
     .toLowerCase();
 
-const savePost = (post, folder = ".") => {
-  const filename = `${folder}/${filenameFromTitle(post.title)}.md`;
-  return saveToFile(filename, postToMd(post));
-};
+const savePost = (post, folder = ".") =>
+  new Promise((resolve, reject) => {
+    try {
+      const filename = `${folder}/${filenameFromTitle(post.title)}.md`;
+      resolve(saveToFile(filename, postToMd(post)));
+    } catch (error) {
+      reject(error);
+    }
+  });
 
 const importXml = async (backupXml, outputDir) => {
   const parsedXml = await parseXml(backupXml);
@@ -115,7 +120,9 @@ const importXml = async (backupXml, outputDir) => {
         console.log(`Skipped ${entry.id} since it has no title`);
       } else {
         savePost(post, outputDir).catch((error) => {
+          const postSubject = post.title || `entry ID: ${entry.id}`;
           console.error(error);
+          console.error(`  "${postSubject}" is skipped due to this error`);
         });
       }
     }
