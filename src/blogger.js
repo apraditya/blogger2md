@@ -77,7 +77,11 @@ const postToMd = (post) => {
 
   let tagStr = "";
   if (tags.length) {
-    tagStr = tags.map((a) => "- " + a).join("\n");
+    if (tags.map) {
+      tagStr = tags.map((a) => `- ${a}`).join("\n");
+    } else {
+      tagStr = `- ${tags}`;
+    }
   }
 
   const fileHeader = `---\ntitle: '${post.title}'\ndate: ${post.published}\ndraft: ${post.draft}\nurl: ${alias}\ntags: \n${tagStr}\n---\n`;

@@ -109,6 +109,16 @@ describe("postToMd", () => {
     expect(fmLines[3]).toContain("");
     expect(fmLines[4]).toContain("tags");
   });
+
+  it("handles if the tags is a single string", async () => {
+    xmlFile = "post-single-tag.xml";
+    const result = await subject();
+    const fmLines = getFrontMatter(result);
+    expect(fmLines[0]).toContain("title");
+    expect(fmLines[4]).toContain("tags");
+    expect(fmLines[5]).toContain("Ruby on Rails");
+    expect(fmLines[6]).toBeUndefined();
+  });
 });
 
 describe("filenameFromTitle", () => {
