@@ -21,7 +21,7 @@ describe("validateArgs", () => {
 
   it("throws 'does not exist' error", () => {
     testedArgs = ["./not-exist-file.xml"];
-    expect(subject).toThrowError(/doesn\'t exist/);
+    expect(subject).toThrowError(/doesn't exist/);
   });
 
   it("sets md-output as default outputDir", () => {
@@ -34,14 +34,14 @@ describe("validateArgs", () => {
   it("creates the output dir if not exist", () => {
     testedArgs = ["./test/fixtures/complete.xml"];
     expect(existsSync("md-output")).toBeFalsy();
-    const { backupXml, outputDir } = subject();
+    subject();
     expect(existsSync("md-output")).toBeTruthy();
   });
 });
 
 describe("saveToFile", () => {
   let filename = "./test/fixtures/save-to-file.md";
-  let content = "A content";
+  const content = "A content";
 
   afterEach(() => {
     if (existsSync(filename)) {
@@ -52,7 +52,7 @@ describe("saveToFile", () => {
   const subject = async () => saveToFile(filename, content);
 
   it("saves to the file", async () => {
-    const result = await subject();
+    await subject();
     expect(existsSync(filename)).toBeTruthy();
   });
 

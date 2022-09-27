@@ -16,7 +16,7 @@ async function parseXml(xmlFile) {
     const { title, author, entry, updated } = parsedXml.feed || {};
 
     if ([title, author, entry, updated].some((attr) => attr === undefined)) {
-      throw "The XML file is invalid backup file.";
+      throw new Error("The XML file is invalid backup file.");
     }
 
     return { title, author, entry, updated };
@@ -37,7 +37,7 @@ const getUrl = (entryLink) => {
 
 const getTags = (entryCategory) => {
   if (!entryCategory.filter) {
-    if (entryCategory["@_term"]?.indexOf("schemas.google") == -1) {
+    if (entryCategory["@_term"]?.indexOf("schemas.google") === -1) {
       return entryCategory["@_term"];
     } else {
       return [];
@@ -45,17 +45,17 @@ const getTags = (entryCategory) => {
   }
 
   return entryCategory
-    .filter((category) => category["@_term"]?.indexOf("schemas.google") == -1)
+    .filter((category) => category["@_term"]?.indexOf("schemas.google") === -1)
     .map((category) => category["@_term"]);
 };
 
 const entryToPost = (postEntry) => {
-  let { published } = postEntry;
-  let title = postEntry.title["#text"];
+  const { published } = postEntry;
+  const title = postEntry.title["#text"];
   let draft = "false";
   if (
     postEntry["app:control"] &&
-    postEntry["app:control"]["app:draft"] == "yes"
+    postEntry["app:control"]["app:draft"] === "yes"
   ) {
     draft = "true";
   }
@@ -73,7 +73,7 @@ const entryToPost = (postEntry) => {
 const postToMd = (post) => {
   const { url, tags } = post;
 
-  let alias = url.replace(/^.*\/\/[^\/]+/, "");
+  const alias = url.replace(/^.*\/\/[^/]+/, "");
 
   let tagStr = "";
   if (tags.length) {
@@ -99,9 +99,9 @@ const postToMd = (post) => {
 
 const filenameFromTitle = (str) =>
   sanitize(str)
-    .replace(/[\.']/g, "") // remove dots and single quotes
+    .replace(/[.']/g, "") // remove dots and single quotes
     .replace(/[^a-z0-9]/gi, "-") // replace those that aren't number nor letter with a hyphen
-    .replace(/[\-]{2,}/g, "-") // replace repeating hyphens into a single one
+    .replace(/[-]{2,}/g, "-") // replace repeating hyphens into a single one
     .replace(/-$/g, "") // remove trailing hyphen
     .toLowerCase();
 
@@ -118,7 +118,7 @@ const savePost = (post, folder = ".") =>
 const importXml = async (backupXml, outputDir) => {
   const parsedXml = await parseXml(backupXml);
   Object.values(parsedXml.entry).forEach((entry) => {
-    if (entry.id.indexOf(".post-") != -1 && !entry["thr:in-reply-to"]) {
+    if (entry.id.indexOf(".post-") !== -1 && !entry["thr:in-reply-to"]) {
       const post = entryToPost(entry);
       if (!post.title) {
         console.log(`Skipped ${entry.id} since it has no title`);

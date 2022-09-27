@@ -5,12 +5,12 @@ const {
 } = require("fs");
 
 const validateArgs = (args) => {
-  let [backupXml, outputDir = "md-output"] = args;
+  const [backupXml, outputDir = "md-output"] = args;
 
   if (!backupXml) {
-    throw "Missing backup file";
+    throw new Error("Missing backup file");
   } else if (!existsSync(backupXml)) {
-    throw `${backupXml} doesn't exist.`;
+    throw new Error(`${backupXml} doesn't exist.`);
   }
 
   if (!existsSync(outputDir)) {
