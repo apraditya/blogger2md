@@ -1,6 +1,6 @@
 {
   "name": "blogger2md",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert Blogger backup blog posts to Hugo compatible markdown files",
   "main": "bin/index.js",
   "bin": {
