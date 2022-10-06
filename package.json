@@ -6,6 +6,9 @@
   "bin": {
     "blogger2md": "./bin/index.js"
   },
+  "files": [
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/apraditya/blogger2md.git"
